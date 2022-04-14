@@ -445,13 +445,13 @@ class _CodeHasher:
             return _int_to_bytes(obj)
 
         elif isinstance(obj, (list, tuple)):
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             for item in obj:
                 self.update(h, item, context)
             return h.digest()
 
         elif isinstance(obj, dict):
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             for item in obj.items():
                 self.update(h, item, context)
             return h.digest()
@@ -480,7 +480,7 @@ class _CodeHasher:
                 return b"%s" % pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
 
         elif type_util.is_type(obj, "numpy.ndarray"):
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             self.update(h, obj.shape)
 
             if obj.size >= _NP_SIZE_LARGE:
@@ -510,7 +510,7 @@ class _CodeHasher:
             # UploadedFile is a BytesIO (thus IOBase) but has a name.
             # It does not have a timestamp so this must come before
             # temproary files
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             self.update(h, obj.name)
             self.update(h, obj.tell())
             self.update(h, obj.getvalue())
@@ -526,7 +526,7 @@ class _CodeHasher:
             # on-disk and in-memory StringIO/BytesIO file representations.
             # That means that this condition must come *before* the next
             # condition, which just checks for StringIO/BytesIO.
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             obj_name = getattr(obj, "name", "wonthappen")  # Just to appease MyPy.
             self.update(h, obj_name)
             self.update(h, os.path.getmtime(obj_name))
@@ -539,7 +539,7 @@ class _CodeHasher:
         elif isinstance(obj, io.StringIO) or isinstance(obj, io.BytesIO):
             # Hash in-memory StringIO/BytesIO by their full contents
             # and seek position.
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             self.update(h, obj.tell())
             self.update(h, obj.getvalue())
             return h.digest()
@@ -627,7 +627,7 @@ class _CodeHasher:
                 # (e.g. during development).
                 return self.to_bytes("%s.%s" % (obj.__module__, obj.__name__))
 
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
 
             code = getattr(obj, "__code__", None)
             assert code is not None
@@ -671,7 +671,7 @@ class _CodeHasher:
             # The return value of functools.partial is not a plain function:
             # it's a callable object that remembers the original function plus
             # the values you pickled into it. So here we need to special-case it.
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             self.update(h, obj.args)
             self.update(h, obj.func)
             self.update(h, obj.keywords)
@@ -679,7 +679,7 @@ class _CodeHasher:
 
         else:
             # As a last resort, hash the output of the object's __reduce__ method
-            h = hashlib.new("md5")
+            h = hashlib.new("sha256")
             try:
                 reduce_data = obj.__reduce__()
             except BaseException as e:
@@ -690,7 +690,7 @@ class _CodeHasher:
             return h.digest()
 
     def _code_to_bytes(self, code, context: Context, func=None) -> bytes:
-        h = hashlib.new("md5")
+        h = hashlib.new("sha256")
 
         # Hash the bytecode.
         self.update(h, code.co_code)

@@ -23,15 +23,15 @@ import time
 import os
 
 
-# How many times to try to grab the MD5 hash.
+# How many times to try to grab the SHA256 hash.
 _MAX_RETRIES = 5
 
 # How long to wait between retries.
 _RETRY_WAIT_SECS = 0.1
 
 
-def calc_md5_with_blocking_retries(file_path):
-    """Calculate the MD5 checksum of a given file_path
+def calc_sha256_with_blocking_retries(file_path):
+    """Calculate the SHA256 checksum of a given file_path
 
     IMPORTANT: This method calls time.sleep(), which blocks execution. So you
     should only use this outside the main thread.
@@ -44,7 +44,7 @@ def calc_md5_with_blocking_retries(file_path):
     Returns
     -------
     str
-        The MD5 checksum.
+        The SHA256 checksum.
 
     """
 
@@ -53,11 +53,11 @@ def calc_md5_with_blocking_retries(file_path):
     else:
         content = _get_file_content_with_blocking_retries(file_path)
 
-    md5 = hashlib.md5()
-    md5.update(content)
+    sha256 = hashlib.sha256()
+    sha256.update(content)
 
     # Use hexdigest() instead of digest(), so it's easier to debug.
-    return md5.hexdigest()
+    return sha256.hexdigest()
 
 
 def _get_file_content_with_blocking_retries(file_path):

@@ -259,7 +259,7 @@ def _make_value_key(
     # Create the hash from each arg value, except for those args whose name
     # starts with "_". (Underscore-prefixed args are deliberately excluded from
     # hashing.)
-    args_hasher = hashlib.new("md5")
+    args_hasher = hashlib.new("sha256")
     for arg_name, arg_value in arg_pairs:
         if arg_name is not None and arg_name.startswith("_"):
             _LOGGER.debug("Not hashing %s because it starts with _", arg_name)
@@ -286,7 +286,7 @@ def _make_function_key(cache_type: CacheType, func: types.FunctionType) -> str:
     A function's key is stable across reruns of the app, and changes when
     the function's source code changes.
     """
-    func_hasher = hashlib.new("md5")
+    func_hasher = hashlib.new("sha256")
 
     # Include the function's __module__ and __qualname__ strings in the hash.
     # This means that two identical functions in different modules

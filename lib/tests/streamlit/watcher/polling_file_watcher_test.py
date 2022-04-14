@@ -69,7 +69,7 @@ class PollingFileWatcherTest(unittest.TestCase):
         callback = mock.Mock()
 
         self.os_mock.stat = lambda x: FakeStat(101)
-        self.util_mock.calc_md5_with_blocking_retries = lambda x: "1"
+        self.util_mock.calc_sha256_with_blocking_retries = lambda x: "1"
 
         watcher = polling_file_watcher.PollingFileWatcher(
             "/this/is/my/file.py", callback
@@ -79,7 +79,7 @@ class PollingFileWatcherTest(unittest.TestCase):
         callback.assert_not_called()
 
         self.os_mock.stat = lambda x: FakeStat(102)
-        self.util_mock.calc_md5_with_blocking_retries = lambda x: "2"
+        self.util_mock.calc_sha256_with_blocking_retries = lambda x: "2"
 
         self._run_executor_tasks()
         callback.assert_called_once()
@@ -91,7 +91,7 @@ class PollingFileWatcherTest(unittest.TestCase):
         callback = mock.Mock()
 
         self.os_mock.stat = lambda x: FakeStat(101)
-        self.util_mock.calc_md5_with_blocking_retries = lambda x: "1"
+        self.util_mock.calc_sha256_with_blocking_retries = lambda x: "1"
 
         watcher = polling_file_watcher.PollingFileWatcher(
             "/this/is/my/file.py", callback
@@ -101,7 +101,7 @@ class PollingFileWatcherTest(unittest.TestCase):
         callback.assert_not_called()
 
         # self.os.stat = lambda x: FakeStat(102)  # Same mtime!
-        self.util_mock.calc_md5_with_blocking_retries = lambda x: "2"
+        self.util_mock.calc_sha256_with_blocking_retries = lambda x: "2"
 
         # This is the test:
         self._run_executor_tasks()
@@ -109,12 +109,12 @@ class PollingFileWatcherTest(unittest.TestCase):
 
         watcher.close()
 
-    def test_callback_not_called_if_same_md5(self):
-        """Test that we ignore files with same md5."""
+    def test_callback_not_called_if_same_sha256(self):
+        """Test that we ignore files with same sha256."""
         callback = mock.Mock()
 
         self.os_mock.stat = lambda x: FakeStat(101)
-        self.util_mock.calc_md5_with_blocking_retries = lambda x: "1"
+        self.util_mock.calc_sha256_with_blocking_retries = lambda x: "1"
 
         watcher = polling_file_watcher.PollingFileWatcher(
             "/this/is/my/file.py", callback
@@ -124,8 +124,8 @@ class PollingFileWatcherTest(unittest.TestCase):
         callback.assert_not_called()
 
         self.os_mock.stat = lambda x: FakeStat(102)
-        # Same MD5:
-        # self.mock_util.calc_md5_with_blocking_retries = lambda x: '2'
+        # Same SHA256:
+        # self.mock_util.calc_sha256_with_blocking_retries = lambda x: '2'
 
         # This is the test:
         self._run_executor_tasks()
@@ -141,7 +141,7 @@ class PollingFileWatcherTest(unittest.TestCase):
 
         def modify_mock_file():
             self.os_mock.stat = lambda x: FakeStat(mod_count[0])
-            self.util_mock.calc_md5_with_blocking_retries = (
+            self.util_mock.calc_sha256_with_blocking_retries = (
                 lambda x: "%d" % mod_count[0]
             )
 

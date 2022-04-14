@@ -268,7 +268,7 @@ def _get_widget_id(
 
     Does not mutate the element_proto object.
     """
-    h = hashlib.new("md5")
+    h = hashlib.new("sha256")
     h.update(element_type.encode("utf-8"))
     h.update(element_proto.SerializeToString())
     return f"{GENERATED_WIDGET_KEY_PREFIX}-{h.hexdigest()}-{user_key}"

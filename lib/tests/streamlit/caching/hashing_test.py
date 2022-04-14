@@ -54,7 +54,7 @@ get_main_script_director = MagicMock(return_value=os.getcwd())
 
 
 def get_hash(f):
-    hasher = hashlib.new("md5")
+    hasher = hashlib.new("sha256")
     ch = _CacheFuncHasher(MagicMock())
     ch.update(hasher, f)
     return hasher.digest()

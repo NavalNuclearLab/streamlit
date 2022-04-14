@@ -49,7 +49,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb = mock.Mock()
 
         self.os.stat = lambda x: FakeStat(101)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "1"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "1"
 
         ro = event_based_file_watcher.EventBasedFileWatcher("/this/is/my/file.py", cb)
 
@@ -61,7 +61,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb.assert_not_called()
 
         self.os.stat = lambda x: FakeStat(102)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "2"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "2"
 
         ev = events.FileSystemEvent("/this/is/my/file.py")
         ev.event_type = events.EVENT_TYPE_MODIFIED
@@ -76,7 +76,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb = mock.Mock()
 
         self.os.stat = lambda x: FakeStat(101)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "1"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "1"
 
         ro = event_based_file_watcher.EventBasedFileWatcher("/this/is/my/file.py", cb)
 
@@ -88,7 +88,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb.assert_not_called()
 
         # self.os.stat = lambda x: FakeStat(102)  # Same mtime!
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "2"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "2"
 
         ev = events.FileSystemEvent("/this/is/my/file.py")
         ev.event_type = events.EVENT_TYPE_MODIFIED
@@ -99,12 +99,12 @@ class EventBasedFileWatcherTest(unittest.TestCase):
 
         ro.close()
 
-    def test_callback_not_called_if_same_md5(self):
-        """Test that we ignore files with same md5."""
+    def test_callback_not_called_if_same_sha256(self):
+        """Test that we ignore files with same sha256."""
         cb = mock.Mock()
 
         self.os.stat = lambda x: FakeStat(101)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "1"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "1"
 
         ro = event_based_file_watcher.EventBasedFileWatcher("/this/is/my/file.py", cb)
 
@@ -116,8 +116,8 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb.assert_not_called()
 
         self.os.stat = lambda x: FakeStat(102)
-        # Same MD5:
-        # self.mock_util.calc_md5_with_blocking_retries = lambda x: '2'
+        # Same SHA256:
+        # self.mock_util.calc_sha256_with_blocking_retries = lambda x: '2'
 
         ev = events.FileSystemEvent("/this/is/my/file.py")
         ev.event_type = events.EVENT_TYPE_MODIFIED
@@ -133,7 +133,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb = mock.Mock()
 
         self.os.stat = lambda x: FakeStat(101)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "1"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "1"
 
         ro = event_based_file_watcher.EventBasedFileWatcher("/this/is/my/file.py", cb)
 
@@ -145,7 +145,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
         cb.assert_not_called()
 
         self.os.stat = lambda x: FakeStat(102)
-        self.mock_util.calc_md5_with_blocking_retries = lambda x: "2"
+        self.mock_util.calc_sha256_with_blocking_retries = lambda x: "2"
 
         ev = events.FileSystemEvent("/this/is/my/file.py")
         ev.event_type = events.EVENT_TYPE_DELETED  # Wrong type
@@ -165,7 +165,7 @@ class EventBasedFileWatcherTest(unittest.TestCase):
 
         def modify_mock_file():
             self.os.stat = lambda x: FakeStat(mod_count[0])
-            self.mock_util.calc_md5_with_blocking_retries = (
+            self.mock_util.calc_sha256_with_blocking_retries = (
                 lambda x: "%d" % mod_count[0]
             )
 

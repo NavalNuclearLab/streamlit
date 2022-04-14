@@ -214,8 +214,8 @@ class _MultiFileWatcher(object):
 class WatchedFile(object):
     """Emits notifications when a single file is modified."""
 
-    def __init__(self, md5, modification_time):
-        self.md5 = md5
+    def __init__(self, sha256, modification_time):
+        self.sha256 = sha256
         self.modification_time = modification_time
         self.on_file_changed = Signal()
 
@@ -256,9 +256,9 @@ class _FolderEventHandler(events.FileSystemEventHandler):
         with self._lock:
             watched_file = self._watched_files.get(file_path, None)
             if watched_file is None:
-                md5 = util.calc_md5_with_blocking_retries(file_path)
+                sha256 = util.calc_sha256_with_blocking_retries(file_path)
                 modification_time = os.stat(file_path).st_mtime
-                watched_file = WatchedFile(md5=md5, modification_time=modification_time)
+                watched_file = WatchedFile(sha256=sha256, modification_time=modification_time)
                 self._watched_files[file_path] = watched_file
 
             watched_file.on_file_changed.connect(callback, weak=False)
@@ -332,13 +332,13 @@ class _FolderEventHandler(events.FileSystemEventHandler):
 
         file_info.modification_time = modification_time
 
-        new_md5 = util.calc_md5_with_blocking_retries(file_path)
-        if new_md5 == file_info.md5:
-            LOGGER.debug("File MD5 did not change: %s", file_path)
+        new_sha256 = util.calc_sha256_with_blocking_retries(file_path)
+        if new_sha256 == file_info.sha256:
+            LOGGER.debug("File SHA256 did not change: %s", file_path)
             return
 
-        LOGGER.debug("File MD5 changed: %s", file_path)
-        file_info.md5 = new_md5
+        LOGGER.debug("File SHA256 changed: %s", file_path)
+        file_info.sha256 = new_sha256
         file_info.on_file_changed.send(file_path)
 
     def on_created(self, event):

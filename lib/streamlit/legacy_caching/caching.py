@@ -261,7 +261,7 @@ def _write_to_mem_cache(
 def _get_output_hash(
     value: Any, func_or_code: Callable[..., Any], hash_funcs: Optional[HashFuncsDict]
 ) -> bytes:
-    hasher = hashlib.new("md5")
+    hasher = hashlib.new("sha256")
     update_hash(
         value,
         hasher=hasher,
@@ -507,7 +507,7 @@ def cache(
             # key is used to index into a per-function cache, it must be
             # globally unique, because it is *also* used for a global on-disk
             # cache that is *not* per-function.)
-            value_hasher = hashlib.new("md5")
+            value_hasher = hashlib.new("sha256")
 
             if args:
                 update_hash(
@@ -602,7 +602,7 @@ def _hash_func(func: types.FunctionType, hash_funcs: HashFuncsDict) -> str:
     # decorator-evaluation time and decorated-function-execution time. So we
     # must retrieve the cache object *and* perform the cached-value lookup
     # inside the decorated function.
-    func_hasher = hashlib.new("md5")
+    func_hasher = hashlib.new("sha256")
 
     # Include the function's __module__ and __qualname__ strings in the hash.
     # This means that two identical functions in different modules

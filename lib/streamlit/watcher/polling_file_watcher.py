@@ -67,7 +67,7 @@ class PollingFileWatcher:
 
         self._active = True
         self._modification_time = os.stat(self._file_path).st_mtime
-        self._md5 = util.calc_md5_with_blocking_retries(self._file_path)
+        self._sha256 = util.calc_sha256_with_blocking_retries(self._file_path)
         self._schedule()
 
     def __repr__(self) -> str:
@@ -92,12 +92,12 @@ class PollingFileWatcher:
 
         self._modification_time = modification_time
 
-        md5 = util.calc_md5_with_blocking_retries(self._file_path)
-        if md5 == self._md5:
+        sha256 = util.calc_sha256_with_blocking_retries(self._file_path)
+        if sha256 == self._sha256:
             self._schedule()
             return
 
-        self._md5 = md5
+        self._sha256 = sha256
 
         LOGGER.debug("Change detected: %s", self._file_path)
         self._on_file_changed(self._file_path)

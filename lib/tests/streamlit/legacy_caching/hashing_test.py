@@ -60,7 +60,7 @@ get_main_script_director = MagicMock(return_value=os.getcwd())
 
 # Get code hasher and mock the main script directory.
 def get_hash(f, context=None, hash_funcs=None):
-    hasher = hashlib.new("md5")
+    hasher = hashlib.new("sha256")
     ch = _CodeHasher(hash_funcs=hash_funcs)
     ch._get_main_script_directory = MagicMock()
     ch._get_main_script_directory.return_value = os.getcwd()

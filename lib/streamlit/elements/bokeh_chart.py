@@ -79,7 +79,7 @@ class BokehMixin:
 
         # Generate element ID from delta path
         delta_path = self.dg._get_delta_path_str()
-        element_id = hashlib.md5(delta_path.encode()).hexdigest()
+        element_id = hashlib.sha256(delta_path.encode()).hexdigest()
 
         bokeh_chart_proto = BokehChartProto()
         marshall(bokeh_chart_proto, figure, use_container_width, element_id)
